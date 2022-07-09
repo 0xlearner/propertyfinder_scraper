@@ -145,25 +145,22 @@ class PropertyFinderSale(scrapy.Spider):
             )
         except:
             item["Bedrooms"] = ""
-        bathrooms_1 = response.css(
+        try:
+            bathrooms_1 = response.css(
                 "div.property-facts__content::text"
             ).getall()[3]
-        bathrooms_2 = response.css(
-                "div.property-facts__content::text"
-            ).getall()[2]
-        try:
             if bathrooms_1:
-                item["Bathrooms"] = response.css(
-                    "div.property-facts__content::text"
-                ).getall()[3]
+                item["Bathrooms"] = bathrooms_1
             else:
                 item["Bathrooms"] = ''
         except:
-            if bathrooms_2:
-                item["Bathrooms"] = response.css(
+            try:
+                bathrooms_2 = response.css(
                     "div.property-facts__content::text"
                 ).getall()[2]
-            else:
+                if bathrooms_2:
+                    item["Bathrooms"] = bathrooms_2
+            except:
                 item["Bathrooms"] = ''
 
         item["Area"] = str(json_data[1]["floorSize"]["value"]) + " " + "sqm"
